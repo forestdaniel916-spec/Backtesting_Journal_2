@@ -7,560 +7,380 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Space+Grotesk:wght@500;600&amp;display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600&display=swap');
         
-        :root {
-            --primary: 59 130 246;
-        }
+        body { font-family: 'Inter', system-ui, sans-serif; }
+        .title-font { font-family: 'Space Grotesk', sans-serif; }
         
         .glass {
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(15, 23, 42, 0.8);
             backdrop-filter: blur(12px);
         }
         
-        .dark .glass {
-            background: rgba(15, 23, 42, 0.8);
-        }
-        
         .trade-row:hover {
-            background: rgba(59, 130, 246, 0.1);
+            background: rgba(59, 130, 246, 0.08);
+            transform: translateX(4px);
         }
         
         .pnl-positive { color: #22c55e; }
         .pnl-negative { color: #ef4444; }
         
-        .sidebar-link {
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        
         .sidebar-link.active {
             background: rgba(59, 130, 246, 0.15);
             border-left: 3px solid rgb(59 130 246);
         }
+        
+        .modal {
+            animation: fadeInScale 0.2s ease-out;
+        }
+        @keyframes fadeInScale {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
     </style>
 </head>
-<body class="bg-zinc-950 text-zinc-200 font-sans">
+<body class="bg-zinc-950 text-zinc-200">
     <div class="flex h-screen overflow-hidden">
         <!-- Sidebar -->
         <div class="w-72 bg-zinc-900 border-r border-zinc-800 flex flex-col">
             <div class="p-6 border-b border-zinc-800">
                 <div class="flex items-center gap-3">
-                    <div class="w-9 h-9 bg-blue-600 rounded-xl flex items-center justify-center text-white font-bold text-xl">BT</div>
+                    <div class="w-9 h-9 bg-blue-600 rounded-2xl flex items-center justify-center text-white font-bold text-2xl">BT</div>
                     <div>
-                        <div class="font-semibold tracking-tight text-2xl">BackTest</div>
+                        <div class="title-font text-3xl font-semibold tracking-tighter">BackTest</div>
                         <div class="text-xs text-zinc-500 -mt-1">trading journal v1.0</div>
                     </div>
                 </div>
             </div>
-            
-            <div class="p-4">
-                <div class="text-xs uppercase tracking-widest text-zinc-500 mb-3 px-3">PERIOD</div>
-                <div class="space-y-1">
-                    <select id="month-select" class="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-blue-500">
-                        <option value="2025-02">February 2025</option>
-                    </select>
-                </div>
+
+            <div class="px-4 pt-6">
+                <div class="text-xs uppercase tracking-widest text-zinc-500 mb-2 px-3">PERIOD</div>
+                <select class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-4 py-3 text-sm">
+                    <option>February 2025</option>
+                </select>
             </div>
-            
-            <!-- Navigation -->
-            <nav class="flex-1 overflow-y-auto px-3 py-2">
-                <a href="#" onclick="navigateTo('dashboard')" class="sidebar-link active flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium text-white mb-1">
-                    <i class="fas fa-chart-line w-5"></i>
-                    <span>Dashboard</span>
+
+            <nav class="flex-1 px-3 py-6 space-y-1 overflow-y-auto">
+                <a onclick="navigateTo('dashboard')" class="sidebar-link active flex items-center gap-3 px-4 py-3 rounded-2xl text-sm cursor-pointer">
+                    <i class="fas fa-chart-line w-5"></i> Dashboard
                 </a>
-                <a href="#" onclick="navigateTo('journal')" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium hover:bg-zinc-800 mb-1">
-                    <i class="fas fa-book w-5"></i>
-                    <span>Trade Journal</span>
+                <a onclick="navigateTo('journal')" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-2xl text-sm cursor-pointer">
+                    <i class="fas fa-book w-5"></i> Trade Journal
                 </a>
-                <a href="#" onclick="navigateTo('review')" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium hover:bg-zinc-800 mb-1">
-                    <i class="fas fa-search w-5"></i>
-                    <span>Trade Study Review</span>
+                <a onclick="navigateTo('review')" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-2xl text-sm cursor-pointer">
+                    <i class="fas fa-search w-5"></i> Trade Study Review
                 </a>
-                <a href="#" onclick="navigateTo('analytics')" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium hover:bg-zinc-800 mb-1">
-                    <i class="fas fa-chart-bar w-5"></i>
-                    <span>Analytics</span>
+                <a onclick="navigateTo('analytics')" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-2xl text-sm cursor-pointer">
+                    <i class="fas fa-chart-bar w-5"></i> Analytics
                 </a>
-                <a href="#" onclick="navigateTo('calendar')" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium hover:bg-zinc-800 mb-1">
-                    <i class="fas fa-calendar w-5"></i>
-                    <span>Calendar</span>
-                </a>
-                <a href="#" onclick="navigateTo('goals')" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium hover:bg-zinc-800">
-                    <i class="fas fa-target w-5"></i>
-                    <span>Goals</span>
+                <a onclick="navigateTo('calendar')" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-2xl text-sm cursor-pointer">
+                    <i class="fas fa-calendar w-5"></i> Calendar
                 </a>
             </nav>
-            
-            <div class="p-4 border-t border-zinc-800">
-                <div class="flex items-center gap-3 px-4 py-3 hover:bg-zinc-800 rounded-2xl cursor-pointer" onclick="toggleTheme()">
-                    <i id="theme-icon" class="fas fa-moon"></i>
-                    <span class="text-sm">Dark Mode</span>
-                </div>
-                <div onclick="logout()" class="flex items-center gap-3 px-4 py-3 hover:bg-zinc-800 rounded-2xl cursor-pointer text-red-400">
-                    <i class="fas fa-sign-out-alt"></i>
-                    <span class="text-sm">Sign Out</span>
+
+            <div class="p-4 border-t border-zinc-800 mt-auto">
+                <div onclick="toggleTheme()" class="flex items-center gap-3 px-4 py-3 hover:bg-zinc-800 rounded-2xl cursor-pointer">
+                    <i id="theme-icon" class="fas fa-moon w-5"></i>
+                    <span>Dark Mode</span>
                 </div>
             </div>
         </div>
-        
-        <!-- Main Content -->
-        <div class="flex-1 flex flex-col overflow-hidden">
-            <!-- Top Nav -->
-            <div class="h-16 border-b border-zinc-800 bg-zinc-900/80 backdrop-blur-md flex items-center px-8 justify-between z-50">
-                <div class="flex items-center gap-8">
-                    <div class="flex items-center gap-2">
-                        <span id="page-title" class="text-2xl font-semibold tracking-tight">February 2025</span>
-                    </div>
-                </div>
+
+        <!-- Main Area -->
+        <div class="flex-1 flex flex-col">
+            <!-- Top Bar -->
+            <div class="h-16 border-b border-zinc-800 bg-zinc-900/95 backdrop-blur-md flex items-center px-8 justify-between">
+                <h1 id="page-title" class="text-2xl font-semibold title-font">Dashboard</h1>
                 
-                <div class="flex items-center gap-6">
-                    <div class="flex items-center bg-zinc-800 rounded-3xl px-4 py-2 text-sm">
-                        <div class="flex items-center gap-2">
-                            <div class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
-                            <span class="text-emerald-400">Live Market</span>
-                        </div>
-                    </div>
-                    
+                <div class="flex items-center gap-4">
                     <button onclick="newTrade()" 
-                            class="flex items-center gap-2 bg-white text-black px-6 py-2.5 rounded-2xl font-medium hover:bg-white/90 transition">
+                            class="flex items-center gap-2 bg-white text-black px-6 py-2.5 rounded-2xl font-medium hover:bg-white/90 transition-all">
                         <i class="fas fa-plus"></i>
                         <span>New Trade</span>
                     </button>
-                    
-                    <div class="w-9 h-9 bg-zinc-700 rounded-2xl flex items-center justify-center cursor-pointer">
-                        👤
-                    </div>
+                    <div class="w-8 h-8 bg-zinc-700 rounded-xl flex items-center justify-center cursor-pointer">👤</div>
                 </div>
             </div>
-            
-            <!-- Dashboard Content -->
-            <div id="dashboard-content" class="flex-1 overflow-auto p-8">
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                    <!-- KPI Cards -->
-                    <div class="glass border border-zinc-700 rounded-3xl p-6">
-                        <div class="flex justify-between items-start">
-                            <div>
-                                <div class="text-xs text-zinc-500 tracking-widest">WIN RATE</div>
-                                <div id="win-rate" class="text-5xl font-semibold mt-3">0%</div>
-                            </div>
-                            <div class="text-emerald-400">
-                                <i class="fas fa-chart-pie text-4xl"></i>
-                            </div>
+
+            <!-- Content -->
+            <div class="flex-1 overflow-auto p-8" id="main-content">
+                <!-- Dashboard -->
+                <div id="dashboard-page">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <div class="glass border border-zinc-700 rounded-3xl p-6">
+                            <div class="text-xs text-zinc-500">WIN RATE</div>
+                            <div class="text-6xl font-bold mt-4" id="win-rate">100%</div>
                         </div>
-                        <div class="text-xs text-zinc-500 mt-6">No closed trades yet</div>
-                    </div>
-                    
-                    <div class="glass border border-zinc-700 rounded-3xl p-6">
-                        <div class="flex justify-between items-start">
-                            <div>
-                                <div class="text-xs text-zinc-500 tracking-widest">TOTAL P&amp;L</div>
-                                <div id="total-pnl" class="text-5xl font-semibold mt-3 text-emerald-400">$0.00</div>
-                            </div>
-                            <div class="text-emerald-400">
-                                <i class="fas fa-dollar-sign text-4xl"></i>
-                            </div>
+                        <div class="glass border border-zinc-700 rounded-3xl p-6">
+                            <div class="text-xs text-zinc-500">TOTAL P&amp;L</div>
+                            <div class="text-6xl font-bold mt-4 text-emerald-400" id="total-pnl">$240.00</div>
                         </div>
-                    </div>
-                    
-                    <div class="glass border border-zinc-700 rounded-3xl p-6">
-                        <div class="flex justify-between items-start">
-                            <div>
-                                <div class="text-xs text-zinc-500 tracking-widest">BALANCE</div>
-                                <div id="balance" class="text-5xl font-semibold mt-3">$10,000.00</div>
-                                <div class="text-xs text-zinc-500">starting + PnL</div>
-                            </div>
+                        <div class="glass border border-zinc-700 rounded-3xl p-6">
+                            <div class="text-xs text-zinc-500">BALANCE</div>
+                            <div class="text-6xl font-bold mt-4">$10,240.00</div>
                         </div>
-                    </div>
-                    
-                    <div class="glass border border-zinc-700 rounded-3xl p-6">
-                        <div class="flex justify-between">
-                            <div class="text-center">
-                                <div class="text-emerald-400 text-3xl font-bold">2</div>
-                                <div class="text-xs text-zinc-500">TOTAL TRADES</div>
-                            </div>
-                            <div class="text-center">
-                                <div class="text-emerald-400 text-3xl font-bold">0</div>
-                                <div class="text-xs text-zinc-500">WINS</div>
-                            </div>
-                            <div class="text-center">
-                                <div class="text-red-400 text-3xl font-bold">0</div>
-                                <div class="text-xs text-zinc-500">LOSSES</div>
+                        <div class="glass border border-zinc-700 rounded-3xl p-6">
+                            <div class="flex justify-between">
+                                <div><span class="text-emerald-400 text-4xl font-bold">1</span><br><span class="text-xs text-zinc-500">WINS</span></div>
+                                <div><span class="text-red-400 text-4xl font-bold">0</span><br><span class="text-xs text-zinc-500">LOSSES</span></div>
                             </div>
                         </div>
                     </div>
                 </div>
-                
-                <!-- Charts Row -->
-                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-                    <!-- Daily PnL -->
-                    <div class="lg:col-span-7 glass border border-zinc-700 rounded-3xl p-6">
-                        <div class="flex justify-between mb-6">
-                            <div class="font-medium">Daily P&amp;L</div>
-                        </div>
-                        <div class="h-80 flex items-center justify-center text-zinc-500">
-                            <canvas id="dailyPnlChart" width="700" height="300"></canvas>
-                        </div>
+
+                <!-- Journal Page -->
+                <div id="journal-page" class="hidden">
+                    <div class="flex justify-between items-center mb-8">
+                        <h2 class="text-3xl font-semibold">Trade Journal</h2>
+                        <button onclick="newTrade()" class="bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-2xl flex items-center gap-2">
+                            <i class="fas fa-plus"></i> New Trade
+                        </button>
                     </div>
-                    
-                    <!-- Win/Loss Donut -->
-                    <div class="lg:col-span-5 glass border border-zinc-700 rounded-3xl p-6">
-                        <div class="font-medium mb-6">Win / Loss / Breakeven</div>
-                        <div class="flex justify-center">
-                            <div class="relative w-64 h-64">
-                                <svg class="w-full h-full -rotate-12" viewBox="0 0 200 200">
-                                    <circle cx="100" cy="100" r="80" fill="none" stroke="#27272a" stroke-width="30"/>
-                                    <circle cx="100" cy="100" r="80" fill="none" stroke="#22c55e" stroke-width="30" 
-                                            stroke-dasharray="502" stroke-dashoffset="120" stroke-linecap="round"/>
-                                </svg>
-                                <div class="absolute inset-0 flex items-center justify-center text-center">
-                                    <div>
-                                        <div class="text-6xl font-bold text-emerald-400">100%</div>
-                                        <div class="text-xs text-zinc-400">WIN RATE</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+
+                    <input type="text" id="search" placeholder="Search trades..." 
+                           class="w-full max-w-md bg-zinc-900 border border-zinc-700 rounded-2xl px-5 py-4 mb-6 focus:outline-none focus:border-blue-500"
+                           onkeyup="filterTrades()">
+
+                    <div class="glass border border-zinc-700 rounded-3xl overflow-hidden">
+                        <table class="w-full">
+                            <thead class="bg-zinc-950 sticky top-0">
+                                <tr class="text-xs text-zinc-400 border-b border-zinc-800">
+                                    <th class="text-left py-5 px-8">ID</th>
+                                    <th class="text-left py-5 px-8">Date</th>
+                                    <th class="text-left py-5 px-8">Asset</th>
+                                    <th class="text-left py-5 px-8">Direction</th>
+                                    <th class="text-right py-5 px-8">Entry</th>
+                                    <th class="text-right py-5 px-8">Exit</th>
+                                    <th class="text-right py-5 px-8">P&amp;L</th>
+                                    <th class="text-center py-5 px-8">RR</th>
+                                    <th class="text-center py-5 px-8">Rules</th>
+                                    <th class="w-16"></th>
+                                </tr>
+                            </thead>
+                            <tbody id="journal-body" class="divide-y divide-zinc-800"></tbody>
+                        </table>
                     </div>
-                </div>
-                
-                <!-- Cumulative PnL -->
-                <div class="mt-6 glass border border-zinc-700 rounded-3xl p-6">
-                    <div class="font-medium mb-4">Cumulative PnL Curve</div>
-                    <div class="h-64 flex items-end gap-1">
-                        <div class="flex-1 h-[60%] bg-emerald-500/20 rounded"></div>
-                        <div class="flex-1 h-[65%] bg-emerald-500/30 rounded"></div>
-                        <div class="flex-1 h-[100%] bg-emerald-500 rounded"></div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Journal Content (Hidden by default) -->
-            <div id="journal-content" class="flex-1 overflow-auto p-8 hidden">
-                <div class="flex justify-between items-center mb-6">
-                    <h1 class="text-3xl font-semibold">Trade Journal</h1>
-                    <button onclick="newTrade()" class="bg-blue-600 hover:bg-blue-700 px-8 py-3 rounded-2xl flex items-center gap-2">
-                        <i class="fas fa-plus"></i> Log New Trade
-                    </button>
-                </div>
-                
-                <!-- Filters -->
-                <div class="flex gap-3 mb-6 flex-wrap">
-                    <input type="text" id="search-input" placeholder="Search trades..." 
-                           class="bg-zinc-900 border border-zinc-700 focus:border-blue-500 rounded-2xl px-5 py-3 w-80 outline-none">
-                    <button onclick="exportCSV()" class="px-6 py-3 border border-zinc-700 hover:bg-zinc-800 rounded-2xl">Export CSV</button>
-                </div>
-                
-                <!-- Trades Table -->
-                <div class="glass border border-zinc-700 rounded-3xl overflow-hidden">
-                    <table class="w-full">
-                        <thead>
-                            <tr class="border-b border-zinc-800 text-xs text-zinc-400">
-                                <th class="text-left py-5 px-8 font-normal">ID</th>
-                                <th class="text-left py-5 px-8 font-normal">Date</th>
-                                <th class="text-left py-5 px-8 font-normal">Asset</th>
-                                <th class="text-left py-5 px-8 font-normal">Direction</th>
-                                <th class="text-left py-5 px-8 font-normal">Entry</th>
-                                <th class="text-left py-5 px-8 font-normal">Exit</th>
-                                <th class="text-right py-5 px-8 font-normal">Net P&amp;L</th>
-                                <th class="text-center py-5 px-8 font-normal">RR</th>
-                                <th class="text-center py-5 px-8 font-normal">Rules</th>
-                                <th class="w-12"></th>
-                            </tr>
-                        </thead>
-                        <tbody id="trades-body" class="text-sm">
-                            <!-- Populated by JS -->
-                        </tbody>
-                    </table>
                 </div>
             </div>
         </div>
     </div>
-    
+
     <!-- New Trade Modal -->
-    <div id="trade-modal" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-[100]">
-        <div class="bg-zinc-900 w-full max-w-4xl mx-4 rounded-3xl max-h-[90vh] overflow-auto">
+    <div id="modal" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-50">
+        <div class="modal bg-zinc-900 w-full max-w-3xl mx-4 rounded-3xl max-h-[92vh] overflow-auto">
             <div class="p-8">
                 <div class="flex justify-between items-center mb-8">
-                    <h2 class="text-2xl font-semibold">New Trade Entry</h2>
-                    <button onclick="closeModal()" class="text-3xl leading-none text-zinc-400 hover:text-white">×</button>
+                    <h3 class="text-2xl font-semibold">Log New Trade</h3>
+                    <button onclick="closeModal()" class="text-4xl text-zinc-400 hover:text-white">×</button>
                 </div>
-                
-                <div class="grid grid-cols-2 gap-6" id="trade-form">
-                    <!-- Form fields populated by JS -->
+
+                <div class="grid grid-cols-2 gap-6" id="form-content"></div>
+
+                <div class="mt-10 border border-zinc-700 rounded-3xl p-6">
+                    <div class="flex justify-between mb-4">
+                        <span class="font-medium">Rules of Engagement</span>
+                        <span id="rules-count" class="font-mono text-emerald-400">0/5</span>
+                    </div>
+                    <div id="rules-list" class="space-y-3"></div>
                 </div>
-                
+
                 <div class="mt-8 flex gap-4">
-                    <button onclick="saveTrade()" 
-                            class="flex-1 bg-emerald-600 hover:bg-emerald-500 py-4 rounded-2xl font-semibold">Save Trade</button>
-                    <button onclick="closeModal()" 
-                            class="flex-1 border border-zinc-700 hover:bg-zinc-800 py-4 rounded-2xl">Cancel</button>
+                    <button onclick="saveTrade()" class="flex-1 bg-emerald-600 hover:bg-emerald-500 py-4 rounded-2xl font-semibold">Save Trade</button>
+                    <button onclick="closeModal()" class="flex-1 border border-zinc-700 hover:bg-zinc-800 py-4 rounded-2xl">Cancel</button>
                 </div>
             </div>
         </div>
     </div>
-    
+
     <script>
-        // Tailwind script already included
         let trades = [];
         let nextId = 1;
-        let currentTheme = 'dark';
-        
-        function navigateTo(page) {
-            document.querySelectorAll('.sidebar-link').forEach(link => link.classList.remove('active'));
-            
-            if (page === 'dashboard') {
-                document.getElementById('dashboard-content').classList.remove('hidden');
-                document.getElementById('journal-content').classList.add('hidden');
-                document.getElementById('page-title').textContent = 'February 2025';
-            } else if (page === 'journal') {
-                document.getElementById('dashboard-content').classList.add('hidden');
-                document.getElementById('journal-content').classList.remove('hidden');
-                document.getElementById('page-title').textContent = 'Trade Journal';
-                renderTrades();
-            }
-        }
-        
-        function toggleTheme() {
-            if (currentTheme === 'dark') {
-                document.documentElement.classList.add('light');
-                currentTheme = 'light';
-                document.getElementById('theme-icon').classList.replace('fa-moon', 'fa-sun');
-            } else {
-                document.documentElement.classList.remove('light');
-                currentTheme = 'dark';
-                document.getElementById('theme-icon').classList.replace('fa-sun', 'fa-moon');
-            }
-        }
-        
-        function newTrade() {
-            const modal = document.getElementById('trade-modal');
-            modal.classList.remove('hidden');
-            renderTradeForm();
-        }
-        
-        function closeModal() {
-            document.getElementById('trade-modal').classList.add('hidden');
-        }
-        
-        function renderTradeForm() {
-            const formContainer = document.getElementById('trade-form');
-            formContainer.innerHTML = `
-                <div class="space-y-6">
-                    <div>
-                        <label class="block text-xs text-zinc-400 mb-1.5">DATE</label>
-                        <input type="date" id="trade-date" value="2025-02-01" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-5 py-4">
-                    </div>
-                    <div>
-                        <label class="block text-xs text-zinc-400 mb-1.5">ASSET</label>
-                        <input id="trade-asset" value="EURUSD" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-5 py-4">
-                    </div>
-                    <div>
-                        <label class="block text-xs text-zinc-400 mb-1.5">DIRECTION</label>
-                        <div class="flex gap-3">
-                            <button onclick="selectDirection(this)" class="direction-btn flex-1 py-4 bg-emerald-600 text-white rounded-2xl">LONG</button>
-                            <button onclick="selectDirection(this)" class="direction-btn flex-1 py-4 border border-zinc-700 rounded-2xl">SHORT</button>
-                        </div>
-                    </div>
-                    <div>
-                        <label class="block text-xs text-zinc-400 mb-1.5">ENTRY PRICE</label>
-                        <input id="entry-price" type="number" step="0.00001" value="1.0825" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-5 py-4">
-                    </div>
-                </div>
-                
-                <div class="space-y-6">
-                    <div>
-                        <label class="block text-xs text-zinc-400 mb-1.5">EXIT PRICE</label>
-                        <input id="exit-price" type="number" step="0.00001" value="1.0880" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-5 py-4">
-                    </div>
-                    <div>
-                        <label class="block text-xs text-zinc-400 mb-1.5">STOP LOSS</label>
-                        <input id="stop-loss" type="number" step="0.00001" value="1.0800" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-5 py-4">
-                    </div>
-                    <div>
-                        <label class="block text-xs text-zinc-400 mb-1.5">TAKE PROFIT</label>
-                        <input id="take-profit" type="number" step="0.00001" value="1.0920" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-5 py-4">
-                    </div>
-                    <div>
-                        <label class="block text-xs text-zinc-400 mb-1.5">RISK AMOUNT ($)</label>
-                        <input id="risk-amount" type="number" value="50" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-5 py-4">
-                    </div>
-                </div>
-                
-                <!-- Rules Section -->
-                <div class="col-span-2 mt-8 border border-zinc-700 rounded-3xl p-6">
-                    <div class="flex justify-between items-center mb-4">
-                        <div class="font-medium">Rules of Engagement</div>
-                        <div id="rules-summary" class="text-emerald-400 font-mono">0/5</div>
-                    </div>
-                    <div id="rules-checklist" class="space-y-3 text-sm"></div>
-                </div>
-            `;
-            
-            renderRulesChecklist();
-        }
-        
-        const tradingRules = [
+        let currentPage = 'dashboard';
+
+        const rulesList = [
             "No Trades on Monday",
             "Keep the Daily Trend in mind",
             "If previous day is bullish on bearish trend, avoid",
             "If previous day is bearish on bullish trend, avoid",
             "Ideal setup: PD Array in previous day's range"
         ];
-        
-        function renderRulesChecklist() {
-            const container = document.getElementById('rules-checklist');
-            container.innerHTML = tradingRules.map((rule, index) => `
-                <label class="flex items-center gap-3 cursor-pointer group">
-                    <input type="checkbox" id="rule-${index}" class="w-5 h-5 accent-emerald-500" onchange="updateRulesSummary()">
-                    <span class="text-zinc-300">${rule}</span>
+
+        function navigateTo(page) {
+            currentPage = page;
+            document.querySelectorAll('.sidebar-link').forEach(link => link.classList.remove('active'));
+            
+            document.getElementById('dashboard-page').classList.add('hidden');
+            document.getElementById('journal-page').classList.add('hidden');
+
+            if (page === 'dashboard') {
+                document.getElementById('dashboard-page').classList.remove('hidden');
+                document.getElementById('page-title').textContent = 'Dashboard';
+                document.querySelectorAll('.sidebar-link')[0].classList.add('active');
+            } else if (page === 'journal') {
+                document.getElementById('journal-page').classList.remove('hidden');
+                document.getElementById('page-title').textContent = 'Trade Journal';
+                document.querySelectorAll('.sidebar-link')[1].classList.add('active');
+                renderJournal();
+            }
+        }
+
+        function newTrade() {
+            document.getElementById('modal').classList.remove('hidden');
+            renderForm();
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.add('hidden');
+        }
+
+        function renderForm() {
+            const html = `
+                <div class="space-y-5">
+                    <div>
+                        <label class="text-xs text-zinc-400 block mb-1">DATE</label>
+                        <input type="date" id="date" value="2025-02-01" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-5 py-4">
+                    </div>
+                    <div>
+                        <label class="text-xs text-zinc-400 block mb-1">ASSET</label>
+                        <input id="asset" value="EURUSD" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-5 py-4">
+                    </div>
+                    <div>
+                        <label class="text-xs text-zinc-400 block mb-1">DIRECTION</label>
+                        <div class="flex gap-2">
+                            <button onclick="this.classList.add('bg-emerald-600','text-white');this.nextElementSibling.classList.remove('bg-emerald-600','text-white')" 
+                                    class="flex-1 py-4 rounded-2xl bg-emerald-600 text-white">LONG</button>
+                            <button onclick="this.classList.add('bg-emerald-600','text-white');this.previousElementSibling.classList.remove('bg-emerald-600','text-white')" 
+                                    class="flex-1 py-4 rounded-2xl border border-zinc-700">SHORT</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="space-y-5">
+                    <div>
+                        <label class="text-xs text-zinc-400 block mb-1">ENTRY PRICE</label>
+                        <input id="entry" type="number" step="0.00001" value="1.0825" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-5 py-4">
+                    </div>
+                    <div>
+                        <label class="text-xs text-zinc-400 block mb-1">EXIT PRICE</label>
+                        <input id="exit" type="number" step="0.00001" value="1.0880" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-5 py-4">
+                    </div>
+                    <div>
+                        <label class="text-xs text-zinc-400 block mb-1">P&amp;L ($)</label>
+                        <input id="pnl" type="number" value="120" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-5 py-4">
+                    </div>
+                </div>
+            `;
+            document.getElementById('form-content').innerHTML = html;
+            renderRules();
+        }
+
+        function renderRules() {
+            const container = document.getElementById('rules-list');
+            container.innerHTML = rulesList.map((rule, i) => `
+                <label class="flex items-start gap-3 cursor-pointer">
+                    <input type="checkbox" id="rule${i}" class="mt-1 accent-emerald-500" onchange="updateRuleCount()">
+                    <span class="text-sm">${rule}</span>
                 </label>
             `).join('');
         }
-        
-        function updateRulesSummary() {
-            const checked = Array.from(document.querySelectorAll('#rules-checklist input[type="checkbox"]:checked')).length;
-            document.getElementById('rules-summary').textContent = `${checked}/5`;
+
+        function updateRuleCount() {
+            const checked = document.querySelectorAll('#rules-list input:checked').length;
+            document.getElementById('rules-count').textContent = `${checked}/5`;
         }
-        
-        function selectDirection(btn) {
-            document.querySelectorAll('.direction-btn').forEach(b => {
-                b.classList.remove('bg-emerald-600', 'text-white');
-                b.classList.add('border', 'border-zinc-700');
-            });
-            btn.classList.add('bg-emerald-600', 'text-white');
-            btn.classList.remove('border', 'border-zinc-700');
-        }
-        
+
         function saveTrade() {
             const trade = {
                 id: nextId++,
-                date: document.getElementById('trade-date').value,
-                asset: document.getElementById('trade-asset').value,
-                direction: 'LONG',
-                entry: parseFloat(document.getElementById('entry-price').value),
-                exit: parseFloat(document.getElementById('exit-price').value),
-                pnl: 120,
-                rr: '1:2.4',
-                rulesFollowed: 4
+                date: document.getElementById('date').value,
+                asset: document.getElementById('asset').value || "EURUSD",
+                direction: "LONG",
+                entry: parseFloat(document.getElementById('entry').value),
+                exit: parseFloat(document.getElementById('exit').value),
+                pnl: parseFloat(document.getElementById('pnl').value),
+                rr: "1:2.4",
+                rulesFollowed: document.querySelectorAll('#rules-list input:checked').length
             };
-            
+
             trades.unshift(trade);
             closeModal();
-            renderTrades();
+            if (currentPage === 'journal') renderJournal();
             
-            // Show toast
-            showToast('Trade saved successfully');
+            showToast("Trade saved successfully");
         }
-        
-        function renderTrades() {
-            const tbody = document.getElementById('trades-body');
-            tbody.innerHTML = trades.map(trade => `
-                <tr class="trade-row border-b border-zinc-800 hover:bg-zinc-800/50">
-                    <td class="py-6 px-8 font-mono text-zinc-400">#${trade.id}</td>
-                    <td class="py-6 px-8">${trade.date}</td>
-                    <td class="py-6 px-8 font-medium">${trade.asset}</td>
-                    <td class="py-6 px-8">
-                        <span class="inline-block px-4 py-1 bg-emerald-900 text-emerald-400 text-xs rounded-3xl">${trade.direction}</span>
+
+        function renderJournal() {
+            const tbody = document.getElementById('journal-body');
+            tbody.innerHTML = trades.map(t => `
+                <tr class="trade-row">
+                    <td class="px-8 py-6 font-mono">#${t.id}</td>
+                    <td class="px-8 py-6">${t.date}</td>
+                    <td class="px-8 py-6 font-medium">${t.asset}</td>
+                    <td class="px-8 py-6">
+                        <span class="px-4 py-1 text-xs bg-emerald-900 text-emerald-400 rounded-full">${t.direction}</span>
                     </td>
-                    <td class="py-6 px-8 font-mono">${trade.entry}</td>
-                    <td class="py-6 px-8 font-mono">${trade.exit}</td>
-                    <td class="py-6 px-8 text-right font-semibold pnl-positive">+$${trade.pnl}</td>
-                    <td class="py-6 px-8 text-center font-mono">${trade.rr}</td>
-                    <td onclick="showRulesPanel(${trade.id})" class="py-6 px-8 text-center cursor-pointer hover:text-blue-400">
-                        <span class="font-mono">${trade.rulesFollowed}/5</span>
+                    <td class="px-8 py-6 text-right font-mono">${t.entry}</td>
+                    <td class="px-8 py-6 text-right font-mono">${t.exit}</td>
+                    <td class="px-8 py-6 text-right font-semibold ${t.pnl > 0 ? 'pnl-positive' : 'pnl-negative'}">
+                        ${t.pnl > 0 ? '+' : ''}$${t.pnl}
                     </td>
-                    <td class="py-6 px-8">
-                        <button onclick="deleteTrade(${trade.id}); event.stopImmediatePropagation()" class="text-zinc-500 hover:text-red-400">
+                    <td class="px-8 py-6 text-center font-mono">${t.rr}</td>
+                    <td onclick="showRules(${t.id})" class="px-8 py-6 text-center cursor-pointer hover:text-blue-400 font-mono">
+                        ${t.rulesFollowed}/5
+                    </td>
+                    <td class="px-8 py-6">
+                        <button onclick="deleteTrade(${t.id}); event.stopImmediatePropagation()" class="text-red-400 hover:text-red-500">
                             <i class="fas fa-trash"></i>
                         </button>
                     </td>
                 </tr>
             `).join('');
         }
-        
-        function showRulesPanel(tradeId) {
-            alert(`Rules panel for trade #${tradeId}\n\n(Full checklist would open here in full version)`);
+
+        function filterTrades() {
+            const term = document.getElementById('search').value.toLowerCase();
+            const rows = document.querySelectorAll('#journal-body tr');
+            rows.forEach(row => {
+                row.style.display = row.textContent.toLowerCase().includes(term) ? '' : 'none';
+            });
         }
-        
+
+        function showRules(id) {
+            const trade = trades.find(t => t.id === id);
+            if (trade) alert(`Trade #${trade.id} Rules\n\n${trade.rulesFollowed} out of 5 rules followed.`);
+        }
+
         function deleteTrade(id) {
-            if (confirm('Delete this trade?')) {
+            if (confirm("Delete this trade?")) {
                 trades = trades.filter(t => t.id !== id);
-                renderTrades();
+                renderJournal();
             }
         }
-        
-        function exportCSV() {
-            alert('Exporting CSV... (Demo)');
-        }
-        
-        function showToast(message) {
+
+        function showToast(msg) {
             const toast = document.createElement('div');
-            toast.className = 'fixed bottom-8 right-8 bg-emerald-600 text-white px-8 py-4 rounded-3xl shadow-2xl flex items-center gap-3';
-            toast.innerHTML = `<i class="fas fa-check"></i> ${message}`;
+            toast.className = "fixed bottom-8 right-8 bg-emerald-600 text-white px-8 py-4 rounded-3xl shadow-2xl flex items-center gap-3 z-50";
+            toast.innerHTML = `✅ ${msg}`;
             document.body.appendChild(toast);
-            
-            setTimeout(() => {
-                toast.style.transition = 'all 0.3s';
-                toast.style.opacity = '0';
-                setTimeout(() => toast.remove(), 300);
-            }, 2500);
+            setTimeout(() => toast.remove(), 3000);
         }
-        
-        function logout() {
-            if (confirm('Sign out?')) {
-                window.location.reload();
-            }
+
+        function toggleTheme() {
+            document.documentElement.classList.toggle('light');
+            const icon = document.getElementById('theme-icon');
+            icon.classList.toggle('fa-moon');
+            icon.classList.toggle('fa-sun');
         }
-        
-        // Initialize demo data
-        function initDemoData() {
+
+        // Initialize
+        window.onload = () => {
+            // Demo data
             trades = [
-                {
-                    id: 2,
-                    date: "2025-02-01",
-                    asset: "EURUSD",
-                    direction: "LONG",
-                    entry: 1.0825,
-                    exit: 1.0880,
-                    pnl: 120,
-                    rr: "1:2.4",
-                    rulesFollowed: 4
-                }
+                { id: 2, date: "2025-02-01", asset: "EURUSD", direction: "LONG", entry: 1.0825, exit: 1.0880, pnl: 120, rr: "1:2.4", rulesFollowed: 4 },
+                { id: 1, date: "2025-01-31", asset: "GBPUSD", direction: "SHORT", entry: 1.2650, exit: 1.2620, pnl: -45, rr: "1:1.8", rulesFollowed: 3 }
             ];
             nextId = 3;
-        }
-        
-        // Keyboard shortcuts
-        document.addEventListener('keydown', (e) => {
-            if (e.key === "Escape") {
-                const modal = document.getElementById('trade-modal');
-                if (!modal.classList.contains('hidden')) closeModal();
-            }
-            if (e.metaKey && e.key === "k") {
-                e.preventDefault();
-                newTrade();
-            }
-        });
-        
-        // Initialize
-        window.onload = function() {
-            initDemoData();
             navigateTo('dashboard');
-            
-            // Simulate chart with simple canvas
-            const canvas = document.getElementById('dailyPnlChart');
-            if (canvas) {
-                const ctx = canvas.getContext('2d');
-                ctx.strokeStyle = '#22c55e';
-                ctx.lineWidth = 3;
-                ctx.beginPath();
-                ctx.moveTo(50, 220);
-                ctx.quadraticCurveTo(200, 180, 400, 120);
-                ctx.quadraticCurveTo(550, 80, 650, 90);
-                ctx.stroke();
-            }
-            
-            console.log('%cBackTest Journal initialized successfully ✨', 'color:#22c55e; font-size:14px; font-family:monospace');
-        }
+        };
     </script>
 </body>
 </html>
